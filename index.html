@@ -1,452 +1,436 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.3">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>💘 Valentine?</title>
+  <style>
+    :root{
+      --bg1:#ffdde1;
+      --bg2:#ee9ca7;
+      --card:#ffffffcc;
+      --text:#1f1f1f;
+      --yes:#22c55e;
+      --yes2:#16a34a;
+      --no:#ef4444;
+      --no2:#dc2626;
+      --shadow: 0 20px 60px rgba(0,0,0,.18);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background: radial-gradient(circle at 20% 10%, #fff 0%, var(--bg1) 25%, var(--bg2) 100%);
+      overflow:hidden;
+    }
+
+    /* Floating hearts background */
+    .heart{
+      position:absolute;
+      width:18px;
+      height:18px;
+      background:rgba(255, 0, 85, .28);
+      transform:rotate(45deg);
+      border-radius:4px;
+      animation: floatUp linear forwards;
+      filter: blur(.2px);
+    }
+    .heart::before, .heart::after{
+      content:"";
+      position:absolute;
+      width:18px;
+      height:18px;
+      background:rgba(255, 0, 85, .28);
+      border-radius:50%;
+    }
+    .heart::before{ left:-9px; top:0; }
+    .heart::after{ left:0; top:-9px; }
+    @keyframes floatUp{
+      from{ transform:translateY(40px) rotate(45deg); opacity:.0; }
+      10%{opacity:.75}
+      to{ transform:translateY(-120vh) rotate(45deg); opacity:0; }
+    }
+
+    .card{
+      width:min(680px, 92vw);
+      background:var(--card);
+      backdrop-filter: blur(10px);
+      border:1px solid rgba(255,255,255,.55);
+      border-radius:24px;
+      box-shadow: var(--shadow);
+      padding:28px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.65);
+      border:1px solid rgba(0,0,0,.06);
+      font-weight:600;
+    }
+
+    h1{
+      margin:16px 0 8px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height:1.05;
+      letter-spacing:-.02em;
+    }
+    .sub{
+      margin:0 0 18px;
+      font-size: clamp(14px, 1.8vw, 18px);
+      opacity:.85;
+    }
+
+    .prompt{
+      margin-top:18px;
+      background:rgba(255,255,255,.7);
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:18px;
+      padding:16px;
+    }
+    .prompt p{ margin:0 0 10px; }
+    .details{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    .chip{
+      background:rgba(0,0,0,.04);
+      border:1px solid rgba(0,0,0,.06);
+      padding:10px 12px;
+      border-radius:14px;
+      font-size:14px;
+    }
+    .chip b{ display:block; font-size:12px; opacity:.7; margin-bottom:4px; }
+
+    .btnRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+      align-items:center;
+    }
+    button{
+      border:none;
+      cursor:pointer;
+      padding:14px 18px;
+      border-radius:16px;
+      font-size:16px;
+      font-weight:700;
+      transition: transform .08s ease, box-shadow .08s ease, background .15s ease;
+      box-shadow: 0 10px 24px rgba(0,0,0,.14);
+      user-select:none;
+    }
+    button:active{ transform: translateY(1px) scale(.99); box-shadow: 0 8px 18px rgba(0,0,0,.14); }
+
+    .yes{
+      background: linear-gradient(180deg, var(--yes), var(--yes2));
+      color:white;
+      min-width: 170px;
+    }
+    .no{
+      background: linear-gradient(180deg, var(--no), var(--no2));
+      color:white;
+      position:relative;
+      min-width: 170px;
+    }
+    .ghost{
+      background: rgba(255,255,255,.75);
+      border:1px solid rgba(0,0,0,.06);
+      box-shadow:none;
+      font-weight:700;
+    }
+
+    .footer{
+      margin-top:16px;
+      font-size:12px;
+      opacity:.65;
+    }
+
+    /* Modal */
+    .modalWrap{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.35);
+      padding:18px;
+      z-index:10;
+    }
+    .modal{
+      width:min(640px, 92vw);
+      background:white;
+      border-radius:22px;
+      box-shadow: var(--shadow);
+      padding:22px;
+      position:relative;
+      overflow:hidden;
+    }
+    .modal h2{
+      margin:0 0 6px;
+      font-size:28px;
+      letter-spacing:-.02em;
+    }
+    .modal p{ margin:0 0 14px; opacity:.9; }
+    .big{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .pill{
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255, 0, 85, .08);
+      border:1px solid rgba(255,0,85,.18);
+      font-weight:700;
+    }
+    .close{
+      position:absolute;
+      top:10px;
+      right:10px;
+      border-radius:12px;
+      padding:10px 12px;
+      background:rgba(0,0,0,.06);
+      box-shadow:none;
+      font-weight:800;
+    }
+
+    /* Confetti hearts */
+    .pop{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:12;
+    }
+    .spark{
+      position:absolute;
+      font-size:18px;
+      animation: popFly 900ms ease-out forwards;
+      opacity:0;
+    }
+    @keyframes popFly{
+      0%{ transform: translate(0,0) scale(.6); opacity:0; }
+      15%{opacity:1}
+      100%{ transform: translate(var(--dx), var(--dy)) scale(1.2); opacity:0; }
+    }
   </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;💘 Valentine?&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>:root{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--bg1:#ffdde1;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--bg2:#ee9ca7;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--card:#ffffffcc;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--text:#1f1f1f;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--yes:#22c55e;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--yes2:#16a34a;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--no:#ef4444;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--no2:#dc2626;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--shadow: 0 20px 60px rgba(0,0,0,.18);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>*{box-sizing:border-box}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>body{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin:0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>min-height:100vh;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display:flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>align-items:center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>justify-content:center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color:var(--text);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: radial-gradient(circle at 20% 10%, #fff 0%, var(--bg1) 25%, var(--bg2) 100%);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>overflow:hidden;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>/* Floating hearts background */</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.heart{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position:absolute;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width:18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>height:18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background:rgba(255, 0, 85, .28);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>transform:rotate(45deg);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius:4px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>animation: floatUp linear forwards;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>filter: blur(.2px);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.heart::before, .heart::after{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>content:"";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position:absolute;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width:18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>height:18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background:rgba(255, 0, 85, .28);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius:50%;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.heart::before{ left:-9px; top:0; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.heart::after{ left:0; top:-9px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>@keyframes floatUp{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>from{ transform:translateY(40px) rotate(45deg); opacity:.0; }</p>
-<p class="p1"><span class="Apple-converted-space">      </span>10%{opacity:.75}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>to{ transform:translateY(-120vh) rotate(45deg); opacity:0; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.card{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width:min(680px, 92vw);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background:var(--card);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>backdrop-filter: blur(10px);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border:1px solid rgba(255,255,255,.55);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius:24px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: var(--shadow);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding:28px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position:relative;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>overflow:hidden;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.badge{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display:inline-flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>align-items:center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap:10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding:10px 14px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius:999px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background:rgba(255,255,255,.65);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border:1px solid rgba(0,0,0,.06);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight:600;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>h1{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin:16px 0 8px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: clamp(28px, 4vw, 44px);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>line-height:1.05;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>letter-spacing:-.02em;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.sub{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin:0 0 18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: clamp(14px, 1.8vw, 18px);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>opacity:.85;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.prompt{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-top:18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background:rgba(255,255,255,.7);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border:1px solid rgba(0,0,0,.06);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius:18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding:16px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.prompt p{ margin:0 0 10px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.details{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display:grid;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>grid-template-columns: 1fr 1fr;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap:10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-top:10px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.chip{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background:rgba(0,0,0,.04);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border:1px solid rgba(0,0,0,.06);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding:10px 12px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius:14px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size:14px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.chip b{ display:block; font-size:12px; opacity:.7; margin-bottom:4px; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.btnRow{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display:flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>flex-wrap:wrap;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap:12px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-top:18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>align-items:center;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>button{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border:none;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>cursor:pointer;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding:14px 18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius:16px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size:16px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight:700;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>transition: transform .08s ease, box-shadow .08s ease, background .15s ease;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 10px 24px rgba(0,0,0,.14);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>user-select:none;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>button:active{ transform: translateY(1px) scale(.99); box-shadow: 0 8px 18px rgba(0,0,0,.14); }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.yes{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: linear-gradient(180deg, var(--yes), var(--yes2));</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color:white;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>min-width: 170px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.no{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: linear-gradient(180deg, var(--no), var(--no2));</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color:white;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position:relative;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>min-width: 170px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.ghost{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(255,255,255,.75);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border:1px solid rgba(0,0,0,.06);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow:none;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight:700;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.footer{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-top:16px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size:12px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>opacity:.65;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>/* Modal */</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.modalWrap{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position:fixed;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>inset:0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display:none;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>align-items:center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>justify-content:center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background:rgba(0,0,0,.35);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding:18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>z-index:10;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.modal{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width:min(640px, 92vw);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background:white;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius:22px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: var(--shadow);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding:22px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position:relative;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>overflow:hidden;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.modal h2{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin:0 0 6px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size:28px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>letter-spacing:-.02em;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.modal p{ margin:0 0 14px; opacity:.9; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.big{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display:flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap:10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>flex-wrap:wrap;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-top:12px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.pill{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding:10px 12px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius:999px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background:rgba(255, 0, 85, .08);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border:1px solid rgba(255,0,85,.18);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight:700;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.close{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position:absolute;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>top:10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>right:10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius:12px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding:10px 12px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background:rgba(0,0,0,.06);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow:none;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight:800;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>/* Confetti hearts */</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.pop{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position:fixed;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>inset:0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>pointer-events:none;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>overflow:hidden;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>z-index:12;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.spark{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position:absolute;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size:18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>animation: popFly 900ms ease-out forwards;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>opacity:0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>@keyframes popFly{</p>
-<p class="p1"><span class="Apple-converted-space">      </span>0%{ transform: translate(0,0) scale(.6); opacity:0; }</p>
-<p class="p1"><span class="Apple-converted-space">      </span>15%{opacity:1}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>100%{ transform: translate(var(--dx), var(--dy)) scale(1.2); opacity:0; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="card" id="card"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="badge"&gt;💌 &lt;span id="toName"&gt;Hey you&lt;/span&gt;… I have a question&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1 id="headline"&gt;Will you be my Valentine? 💘&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p class="sub" id="subline"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>I was trying to act normal today but then I remembered you exist.</p>
-<p class="p1"><span class="Apple-converted-space">      </span>So… I made a whole website.</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/p&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="prompt"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;p&gt;&lt;b&gt;Proposed plan (editable):&lt;/b&gt;&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="details"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="chip"&gt;&lt;b&gt;When&lt;/b&gt;&lt;span id="whenTxt"&gt;Friday, Feb 14 • 7:00 PM&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="chip"&gt;&lt;b&gt;Where&lt;/b&gt;&lt;span id="whereTxt"&gt;Dinner + something sweet after&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="chip"&gt;&lt;b&gt;Dress code&lt;/b&gt;&lt;span id="dressTxt"&gt;Cute (or comfy) — your choice&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="chip"&gt;&lt;b&gt;Promise&lt;/b&gt;&lt;span id="promiseTxt"&gt;I’ll plan it + you just show up&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="btnRow"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="yes" id="yesBtn"&gt;Yes! 💖&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="no" id="noBtn"&gt;No 🙃&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="ghost" id="editBtn"&gt;Customize ✍️&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="footer"&gt;P.S. The “No” button is suspicious and may be unreliable.&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Modal --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="modalWrap" id="modalWrap" aria-hidden="true"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="modal"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="close" id="closeBtn"&gt;✕&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;h2&gt;It’s a date!! 😭💘&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;p id="successMsg"&gt;Okay wow you just made my entire week. I can’t wait.&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="big"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="pill" id="pillWhen"&gt;📅 Friday, Feb 14 • 7:00 PM&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="pill" id="pillWhere"&gt;📍 Dinner + something sweet after&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="pill" id="pillDress"&gt;👗 Cute (or comfy)&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;p style="margin-top:14px; font-size:13px; opacity:.7;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>Screenshot this and send me “YES 💘” so I can do a happy dance.</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="pop" id="pop"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ====== QUICK CUSTOMIZATION (edit these!) ======</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const SETTINGS = {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>herName: "babe",<span class="Apple-converted-space">              </span>// e.g., "Aanya"</p>
-<p class="p1"><span class="Apple-converted-space">      </span>headline: "Will you be my Valentine? 💘",</p>
-<p class="p1"><span class="Apple-converted-space">      </span>subline: "I was trying to act normal today but then I remembered you exist. So… I made a whole website.",</p>
-<p class="p1"><span class="Apple-converted-space">      </span>when: "Friday, Feb 14 • 7:00 PM",</p>
-<p class="p1"><span class="Apple-converted-space">      </span>where: "Dinner + something sweet after",</p>
-<p class="p1"><span class="Apple-converted-space">      </span>dress: "Cute (or comfy) — your choice",</p>
-<p class="p1"><span class="Apple-converted-space">      </span>promise: "I’ll plan it + you just show up",</p>
-<p class="p1"><span class="Apple-converted-space">      </span>successMsg: "Okay wow you just made my entire week. I can’t wait."</p>
-<p class="p1"><span class="Apple-converted-space">    </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Apply settings</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const toName = document.getElementById("toName");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const headline = document.getElementById("headline");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const subline = document.getElementById("subline");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const whenTxt = document.getElementById("whenTxt");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const whereTxt = document.getElementById("whereTxt");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const dressTxt = document.getElementById("dressTxt");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const promiseTxt = document.getElementById("promiseTxt");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const successMsg = document.getElementById("successMsg");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>const pillWhen = document.getElementById("pillWhen");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const pillWhere = document.getElementById("pillWhere");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const pillDress = document.getElementById("pillDress");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function refreshText(){</p>
-<p class="p1"><span class="Apple-converted-space">      </span>toName.textContent = SETTINGS.herName ? `Hey ${SETTINGS.herName}` : "Hey you";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>headline.textContent = SETTINGS.headline;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>subline.textContent = SETTINGS.subline;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>whenTxt.textContent = SETTINGS.when;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>whereTxt.textContent = SETTINGS.where;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>dressTxt.textContent = SETTINGS.dress;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>promiseTxt.textContent = SETTINGS.promise;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>successMsg.textContent = SETTINGS.successMsg;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>pillWhen.textContent = "📅 " + SETTINGS.when;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>pillWhere.textContent = "📍 " + SETTINGS.where;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>pillDress.textContent = "👗 " + SETTINGS.dress.replace("— your choice","").trim();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>refreshText();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Floating hearts generator</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function spawnHeart(){</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const h = document.createElement("div");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>h.className = "heart";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const size = 10 + Math.random()*18;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>h.style.width = size + "px";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>h.style.height = size + "px";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>h.style.left = (Math.random()*100) + "vw";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>h.style.bottom = (-20) + "px";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>h.style.animationDuration = (4 + Math.random()*4) + "s";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>h.style.opacity = (0.25 + Math.random()*0.55);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.body.appendChild(h);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>setTimeout(()=&gt;h.remove(), 9000);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>setInterval(spawnHeart, 260);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// "No" button runs away</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const noBtn = document.getElementById("noBtn");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const yesBtn = document.getElementById("yesBtn");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const editBtn = document.getElementById("editBtn");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const card = document.getElementById("card");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function moveNo(){</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const rect = card.getBoundingClientRect();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const btnRect = noBtn.getBoundingClientRect();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// pick a new spot within card bounds</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const pad = 18;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const maxX = rect.width - btnRect.width - pad;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const maxY = rect.height - btnRect.height - pad;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const x = pad + Math.random()*maxX;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const y = pad + Math.random()*maxY;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>noBtn.style.position = "absolute";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>noBtn.style.left = x + "px";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>noBtn.style.top = y + "px";</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>noBtn.addEventListener("mouseenter", moveNo);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>noBtn.addEventListener("click", moveNo);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// YES -&gt; modal + heart confetti</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const modalWrap = document.getElementById("modalWrap");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const closeBtn = document.getElementById("closeBtn");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const pop = document.getElementById("pop");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function confettiHearts(){</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const emojis = ["💖","💘","💝","💞","💕","❤️","😍","🥰"];</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const cx = window.innerWidth/2;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const cy = window.innerHeight/2;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>for(let i=0;i&lt;42;i++){</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const s = document.createElement("div");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>s.className = "spark";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>s.textContent = emojis[Math.floor(Math.random()*emojis.length)];</p>
-<p class="p1"><span class="Apple-converted-space">        </span>s.style.left = cx + "px";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>s.style.top = cy + "px";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const dx = (Math.random()*2 - 1) * (120 + Math.random()*240);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const dy = (Math.random()*2 - 1) * (120 + Math.random()*240);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>s.style.setProperty("--dx", dx + "px");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>s.style.setProperty("--dy", dy + "px");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>s.style.animationDelay = (Math.random()*120) + "ms";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>pop.appendChild(s);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>setTimeout(()=&gt;s.remove(), 1100);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>yesBtn.addEventListener("click", () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>modalWrap.style.display = "flex";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>modalWrap.setAttribute("aria-hidden", "false");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>confettiHearts();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>closeBtn.addEventListener("click", () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>modalWrap.style.display = "none";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>modalWrap.setAttribute("aria-hidden", "true");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>modalWrap.addEventListener("click", (e) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if(e.target === modalWrap){</p>
-<p class="p1"><span class="Apple-converted-space">        </span>modalWrap.style.display = "none";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>modalWrap.setAttribute("aria-hidden", "true");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Customize prompt</p>
-<p class="p1"><span class="Apple-converted-space">    </span>editBtn.addEventListener("click", () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const herName = prompt("Her name / nickname?", SETTINGS.herName);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if(herName !== null) SETTINGS.herName = herName;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const when = prompt("When is the date?", SETTINGS.when);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if(when !== null) SETTINGS.when = when;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const where = prompt("Where / what’s the plan?", SETTINGS.where);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if(where !== null) SETTINGS.where = where;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const dress = prompt("Dress code line?", SETTINGS.dress);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if(dress !== null) SETTINGS.dress = dress;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const promise = prompt("Promise line?", SETTINGS.promise);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if(promise !== null) SETTINGS.promise = promise;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const successMsg = prompt("Message after she clicks YES?", SETTINGS.successMsg);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if(successMsg !== null) SETTINGS.successMsg = successMsg;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>refreshText();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Reset no button if it got moved</p>
-<p class="p1"><span class="Apple-converted-space">      </span>noBtn.style.position = "relative";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>noBtn.style.left = "0";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>noBtn.style.top = "0";</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+
+  <div class="card" id="card">
+    <div class="badge">💌 <span id="toName">Hey you</span>… I have a question</div>
+
+    <h1 id="headline">Will you be my Valentine? 💘</h1>
+    <p class="sub" id="subline">
+      I was trying to act normal today but then I remembered you exist.
+      So… I made a whole website.
+    </p>
+
+    <div class="prompt">
+      <p><b>Proposed plan (editable):</b></p>
+      <div class="details">
+        <div class="chip"><b>When</b><span id="whenTxt">Friday, Feb 14 • 7:00 PM</span></div>
+        <div class="chip"><b>Where</b><span id="whereTxt">Dinner + something sweet after</span></div>
+        <div class="chip"><b>Dress code</b><span id="dressTxt">Cute (or comfy) — your choice</span></div>
+        <div class="chip"><b>Promise</b><span id="promiseTxt">I’ll plan it + you just show up</span></div>
+      </div>
+    </div>
+
+    <div class="btnRow">
+      <button class="yes" id="yesBtn">Yes! 💖</button>
+      <button class="no" id="noBtn">No 🙃</button>
+      <button class="ghost" id="editBtn">Customize ✍️</button>
+    </div>
+
+    <div class="footer">P.S. The “No” button is suspicious and may be unreliable.</div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modalWrap" id="modalWrap" aria-hidden="true">
+    <div class="modal">
+      <button class="close" id="closeBtn">✕</button>
+      <h2>It’s a date!! 😭💘</h2>
+      <p id="successMsg">Okay wow you just made my entire week. I can’t wait.</p>
+      <div class="big">
+        <div class="pill" id="pillWhen">📅 Friday, Feb 14 • 7:00 PM</div>
+        <div class="pill" id="pillWhere">📍 Dinner + something sweet after</div>
+        <div class="pill" id="pillDress">👗 Cute (or comfy)</div>
+      </div>
+      <p style="margin-top:14px; font-size:13px; opacity:.7;">
+        Screenshot this and send me “YES 💘” so I can do a happy dance.
+      </p>
+    </div>
+  </div>
+
+  <div class="pop" id="pop"></div>
+
+  <script>
+    // ====== QUICK CUSTOMIZATION (edit these!) ======
+    const SETTINGS = {
+      herName: "babe",              // e.g., "Aanya"
+      headline: "Will you be my Valentine? 💘",
+      subline: "I was trying to act normal today but then I remembered you exist. So… I made a whole website.",
+      when: "Friday, Feb 14 • 7:00 PM",
+      where: "Dinner + something sweet after",
+      dress: "Cute (or comfy) — your choice",
+      promise: "I’ll plan it + you just show up",
+      successMsg: "Okay wow you just made my entire week. I can’t wait."
+    };
+
+    // Apply settings
+    const toName = document.getElementById("toName");
+    const headline = document.getElementById("headline");
+    const subline = document.getElementById("subline");
+    const whenTxt = document.getElementById("whenTxt");
+    const whereTxt = document.getElementById("whereTxt");
+    const dressTxt = document.getElementById("dressTxt");
+    const promiseTxt = document.getElementById("promiseTxt");
+    const successMsg = document.getElementById("successMsg");
+
+    const pillWhen = document.getElementById("pillWhen");
+    const pillWhere = document.getElementById("pillWhere");
+    const pillDress = document.getElementById("pillDress");
+
+    function refreshText(){
+      toName.textContent = SETTINGS.herName ? `Hey ${SETTINGS.herName}` : "Hey you";
+      headline.textContent = SETTINGS.headline;
+      subline.textContent = SETTINGS.subline;
+      whenTxt.textContent = SETTINGS.when;
+      whereTxt.textContent = SETTINGS.where;
+      dressTxt.textContent = SETTINGS.dress;
+      promiseTxt.textContent = SETTINGS.promise;
+      successMsg.textContent = SETTINGS.successMsg;
+
+      pillWhen.textContent = "📅 " + SETTINGS.when;
+      pillWhere.textContent = "📍 " + SETTINGS.where;
+      pillDress.textContent = "👗 " + SETTINGS.dress.replace("— your choice","").trim();
+    }
+    refreshText();
+
+    // Floating hearts generator
+    function spawnHeart(){
+      const h = document.createElement("div");
+      h.className = "heart";
+      const size = 10 + Math.random()*18;
+      h.style.width = size + "px";
+      h.style.height = size + "px";
+      h.style.left = (Math.random()*100) + "vw";
+      h.style.bottom = (-20) + "px";
+      h.style.animationDuration = (4 + Math.random()*4) + "s";
+      h.style.opacity = (0.25 + Math.random()*0.55);
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(), 9000);
+    }
+    setInterval(spawnHeart, 260);
+
+    // "No" button runs away
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const editBtn = document.getElementById("editBtn");
+    const card = document.getElementById("card");
+
+    function moveNo(){
+      const rect = card.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      // pick a new spot within card bounds
+      const pad = 18;
+      const maxX = rect.width - btnRect.width - pad;
+      const maxY = rect.height - btnRect.height - pad;
+
+      const x = pad + Math.random()*maxX;
+      const y = pad + Math.random()*maxY;
+
+      noBtn.style.position = "absolute";
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+    noBtn.addEventListener("mouseenter", moveNo);
+    noBtn.addEventListener("click", moveNo);
+
+    // YES -> modal + heart confetti
+    const modalWrap = document.getElementById("modalWrap");
+    const closeBtn = document.getElementById("closeBtn");
+    const pop = document.getElementById("pop");
+
+    function confettiHearts(){
+      const emojis = ["💖","💘","💝","💞","💕","❤️","😍","🥰"];
+      const cx = window.innerWidth/2;
+      const cy = window.innerHeight/2;
+
+      for(let i=0;i<42;i++){
+        const s = document.createElement("div");
+        s.className = "spark";
+        s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        s.style.left = cx + "px";
+        s.style.top = cy + "px";
+        const dx = (Math.random()*2 - 1) * (120 + Math.random()*240);
+        const dy = (Math.random()*2 - 1) * (120 + Math.random()*240);
+        s.style.setProperty("--dx", dx + "px");
+        s.style.setProperty("--dy", dy + "px");
+        s.style.animationDelay = (Math.random()*120) + "ms";
+        pop.appendChild(s);
+        setTimeout(()=>s.remove(), 1100);
+      }
+    }
+
+    yesBtn.addEventListener("click", () => {
+      modalWrap.style.display = "flex";
+      modalWrap.setAttribute("aria-hidden", "false");
+      confettiHearts();
+    });
+
+    closeBtn.addEventListener("click", () => {
+      modalWrap.style.display = "none";
+      modalWrap.setAttribute("aria-hidden", "true");
+    });
+    modalWrap.addEventListener("click", (e) => {
+      if(e.target === modalWrap){
+        modalWrap.style.display = "none";
+        modalWrap.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    // Customize prompt
+    editBtn.addEventListener("click", () => {
+      const herName = prompt("Her name / nickname?", SETTINGS.herName);
+      if(herName !== null) SETTINGS.herName = herName;
+
+      const when = prompt("When is the date?", SETTINGS.when);
+      if(when !== null) SETTINGS.when = when;
+
+      const where = prompt("Where / what’s the plan?", SETTINGS.where);
+      if(where !== null) SETTINGS.where = where;
+
+      const dress = prompt("Dress code line?", SETTINGS.dress);
+      if(dress !== null) SETTINGS.dress = dress;
+
+      const promise = prompt("Promise line?", SETTINGS.promise);
+      if(promise !== null) SETTINGS.promise = promise;
+
+      const successMsg = prompt("Message after she clicks YES?", SETTINGS.successMsg);
+      if(successMsg !== null) SETTINGS.successMsg = successMsg;
+
+      refreshText();
+      // Reset no button if it got moved
+      noBtn.style.position = "relative";
+      noBtn.style.left = "0";
+      noBtn.style.top = "0";
+    });
+  </script>
 </body>
 </html>
